@@ -1,0 +1,65 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    /* 1. 修復 Framebuffer */
+    fragment@0 {
+        target = <&v_frmbuf_wr_0>;
+        __overlay__ {
+            resets = <&zynqmp_reset 116>;
+            reset-names = "reset";
+        };
+    };
+
+    /* 2. 掛載 I2C Switch 與 AP1302 ISP */
+    fragment@1 {
+        target = <&axi_iic_0>;
+        __overlay__ {
+            status = "okay";
+            #address-cells = <1>;
+            #size-cells = <0>;
+
+            i2c-mux@74 {
+                compatible = "nxp,pca9546";
+                #address-cells = <1>;
+                #size-cells = <0>;
+                reg = <0x74>;
+
+                i2c@0 {
+                    #address-cells = <1>;
+                    #size-cells = <0>;
+                    reg = <0>;
+
+                    ap1302: camera@3c {
+                        compatible = "onnn,ap1302";
+                        reg = <0x3c>;
+                        port {
+                            ap1302_out: endpoint {
+                                remote-endpoint = <&csi_rx_in>;
+                                data-lanes = <1 2 3 4>;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    /* 3. 連結 CSI-2 接收端 */
+    fragment@2 {
+        target = <&mipi_csi2_rx_subsystem_0>;
+        __overlay__ {
+            ports {
+                #address-cells = <1>;
+                #size-cells = <0>;
+                port@0 {
+                    reg = <0>;
+                    csi_rx_in: endpoint {
+                        remote-endpoint = <&ap1302_out>;
+                        data-lanes = <1 2 3 4>;
+                    };
+                };
+            };
+        };
+    };
+};

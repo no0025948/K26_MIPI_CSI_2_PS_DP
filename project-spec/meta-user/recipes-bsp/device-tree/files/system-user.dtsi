@@ -1,0 +1,26 @@
+/include/ "system-conf.dtsi"
+/ 
+
+{
+	chosen {
+                bootargs = "earlycon console=ttyPS1,115200 clk_ignore_unused root=/dev/mmcblk1p2 rw rootwait cma=1000M";
+                stdout-path = "serial1:115200n8";
+        };
+
+};
+
+&cpu_opp_table {
+		compatible = "operating-points-v2";
+		opp-shared;
+		opp04 {
+			opp-hz = /bits/ 64 <1299999988>;
+			opp-microvolt = <1000000>;
+			clock-latency-ns = <500000>;
+			};
+};
+
+
+
+&sdhci1 {
+    disable-wp;
+};

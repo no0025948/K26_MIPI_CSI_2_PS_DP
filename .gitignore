@@ -1,0 +1,10 @@
+# 忽略自動生成的龐大目錄
+build/
+components/
+images/
+pre-built/
+
+# 忽略編譯過程檔與日誌
+*.o
+*.log
+*.dtbo
