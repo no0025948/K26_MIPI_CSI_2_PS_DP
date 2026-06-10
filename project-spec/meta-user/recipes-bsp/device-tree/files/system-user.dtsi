@@ -7,6 +7,12 @@
                 stdout-path = "serial1:115200n8";
         };
 
+	psgtr_ref_clk_0_dp: psgtr_ref_clk_0 {
+	        u-boot,dm-pre-reloc;
+	        compatible = "fixed-clock";
+	        #clock-cells = <0>;
+	        clock-frequency = <27000000>;
+	    };
 };
 
 &cpu_opp_table {
@@ -23,4 +29,18 @@
 
 &sdhci1 {
     disable-wp;
+};
+
+
+&psgtr {
+    status = "okay";
+    clocks = <&psgtr_ref_clk_0_dp>;
+    clock-names = "ref0";
+};
+
+&zynqmp_dpsub {
+    status = "okay";
+
+    phys = <&psgtr 1 PHY_TYPE_DP 0 0>, <&psgtr 0 PHY_TYPE_DP 1 0>;
+    phy-names = "dp-phy0", "dp-phy1";
 };
